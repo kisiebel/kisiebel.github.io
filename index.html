@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ODC Microservice Share</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <script>
+
+    let sharingUiLoaded = false;
+    window.onerror = function () { alert('eload1'); }
+    window.onerror = function () { alert('eload2'); }
+
+    document.addEventListener('DOMContentLoaded', function (event) {
+      // Add event listener for post messages.
+      window.addEventListener('message', function (sharingEvent) {
+        let sharingEventData;
+        try {
+          sharingEventData = JSON.parse(sharingEvent.data);
+        } catch (e) {
+          return;
+        }
+
+        // Determine what the message is and respond appropriately.
+        const sharingEventName = sharingEventData.name;
+        if (sharingEventName === 'share_resize') {
+          const iframe = document.getElementById('shareFrame');
+          iframe.style.height = sharingEventData.height + 'px';
+          iframe.style.width = sharingEventData.width + 'px';
+        } else if (sharingEventName === 'share_started' && !sharingUiLoaded) {
+          console.log('ShareV3 >>> Sharing UI started rendering successfully.');
+          const loading = document.getElementById('loading');
+          loading.style.visibility = 'hidden';
+          const iframe = document.getElementById('shareFrame');
+          iframe.style.visibility = 'visible';
+          sharingUiLoaded = true;
+        } else if (sharingEventName === 'share_grantAccessCompleted') {
+          const successString = sharingEventData.successful ? '' : 'not ';
+          console.log('ShareV3 >>> "Grant access" operation completed and it was ' + successString + 'successful.');
+        } else if (sharingEventName === 'share_dismiss') {
+          console.log('ShareV3 >>> Sharing UI dismissed.');
+          const iframe = document.getElementById('shareFrame');
+          iframe.style.visibility = 'hidden';
+        }
+      }, false);
+
+      // Get form and hide it.
+      const form = document.getElementById('shareForm');
+      form.style.display = 'none';
+      debugger;
+      // Add ISharingContextInformation object.
+      const graphToken = '';
+      sharingContextInformation = {
+        authToken: graphToken,
+        clientId: "wordOdc",
+        itemName: "test",
+        mode: 1,
+        disableFontDownload: true
+      };
+
+      // Request page with POST data.
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = 'context';
+      input.id = 'sharingContext';
+      input.value = JSON.stringify(sharingContextInformation);
+      form.appendChild(input);
+      form.submit();
+    });
+  </script>
+
+  <form id="shareForm" target="shareFrame" method="post" action="https://www.onedrive-tst.com/share?consumer=true">
+    <input type="submit" value="Submit">
+  </form>
+  <script>
+    function editInfo() {
+      const input = document.getElementById("sharingContext");
+      let context = JSON.parse(input.value);
+      context.authToken = document.getElementById("graphTokenInput").value;
+      context.itemUrl = document.getElementById("itemUrlInput").value;
+      context.liteItemId = document.getElementById("itemIdInput").value;
+      input.value = JSON.stringify(context);
+      document.getElementById("shareForm").submit();
+      return;
+    }
+  </script>
+  <p>Graph Token: <input type="text" id="graphTokenInput"></p>
+  <p>Item URL: <input type="text" id="itemUrlInput"> <b>- OR -</b> Item ID: <input type="text" id="itemIdInput"></p>
+  <button onclick="return editInfo();">Submit</button>
+  <p></p>
+  <span id="loading" style="margin-left: 60px;">Beautiful loading UI goes here...</span>
+  <p></p>
+  <iframe id="shareFrame" name="shareFrame" style="height: 250px; width: 320px; visibility: hidden;" src="#" />
+
+</body>
+
+</html>
