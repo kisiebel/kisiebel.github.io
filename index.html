@@ -82,13 +82,14 @@
       context.authToken = document.getElementById("graphTokenInput").value;
       context.itemUrl = document.getElementById("itemUrlInput").value;
       context.listItemId = document.getElementById("itemIdInput").value;
+      context.multiShareIds = document.getElementById("multiShareIdsInput").value;
       input.value = JSON.stringify(context);
       document.getElementById("shareForm").submit();
       return;
     }
   </script>
   <p>Graph Token: <input type="text" id="graphTokenInput"></p>
-  <p>Item URL: <input type="text" id="itemUrlInput"> <b>- OR -</b> Item ID: <input type="text" id="itemIdInput"></p>
+  <p>Item URL: <input type="text" id="itemUrlInput"> <b>- OR -</b> Item ID: <input type="text" id="itemIdInput"> <b>- OR -</b> MultiShareIds: <input type="text" id="multiShareIdsInput"></p>
   <button onclick="return editInfo();">Submit</button>
   <p></p>
   <span id="loading" style="margin-left: 60px;">Beautiful loading UI goes here...</span>
