@@ -82,7 +82,7 @@
       context.authToken = document.getElementById("graphTokenInput").value;
       context.itemUrl = document.getElementById("itemUrlInput").value;
       context.listItemId = document.getElementById("itemIdInput").value;
-      context.multiShareIds = document.getElementById("multiShareIdsInput").value;
+      context.multiShareIds = JSON.parse(document.getElementById("multiShareIdsInput").value);
       input.value = JSON.stringify(context);
       document.getElementById("shareForm").submit();
       return;
